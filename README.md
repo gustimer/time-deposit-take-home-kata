@@ -46,7 +46,7 @@ A junior developer implemented domain logic for a time deposit system but did no
     - Adhere to SOLID principles, design patterns, and clean code practices where applicable.
 
 6. **AI-Assisted Development**:
-    - Set up an AI harness or agent workflow and use it throughout the development of this take-home exercise.
+    - Set up an AI harness or agent workflow and use it throughout the development for this take-home exercise.
     - Briefly document the tools and setup used (e.g., LLMs, coding assistants, agentic frameworks, configuration).
     - Ensure your AI setup is practical and reproducible.
     - Include any custom rules, system prompts, or agent configurations used.
