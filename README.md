@@ -45,6 +45,13 @@ A junior developer implemented domain logic for a time deposit system but did no
 5. **Code Quality**:
     - Adhere to SOLID principles, design patterns, and clean code practices where applicable.
 
+6. **AI-Assisted Development**:
+    - Set up an AI harness or agent workflow and use it throughout the development of this take-home exercise.
+    - Briefly document the tools and setup used (e.g., LLMs, coding assistants, agentic frameworks, configuration).
+    - Ensure your AI setup is practical and reproducible.
+    - Include any custom rules, system prompts, or agent configurations used.
+    - Include a brief summary of which parts of the solution were AI-assisted and why.
+
 ### Important Guidelines
 - The existing `TimeDepositCalculator.updateBalance` method is functioning correctly. Ensure its behavior remains unchanged after refactoring.
 - The final solution must include **exactly two API endpoints**. Do not develop additional endpoints.
@@ -58,6 +65,7 @@ A junior developer implemented domain logic for a time deposit system but did no
 - Embrace Hexagonal Architecture.
 - Follow atomic commit practices.
 - Utilize testcontainers.
+- Leverage AI-assisted development tools for code generation, testing, and refactoring.
 
 ### Submission Instructions
 - Provide clear instructions on how to trigger the endpoints using the Swagger contract.
