@@ -70,3 +70,13 @@ A junior developer implemented domain logic for a time deposit system but did no
 ### Submission Instructions
 - Provide clear instructions on how to trigger the endpoints using the Swagger contract.
 - Email the link to your public GitHub repository.
+
+---
+
+## Solution
+
+The implemented solution lives under [`python/`](./python). See
+[`python/README.md`](./python/README.md) for run instructions (via
+`docker compose` or a local `uv` environment), how to trigger the two
+endpoints through Swagger UI, and the AI-assisted development documentation
+(README requirement 6).
