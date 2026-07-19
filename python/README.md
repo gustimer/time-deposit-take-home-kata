@@ -97,11 +97,16 @@ session — Docker must be running for those to pass.
 
 ### Tools and setup
 
-- **Claude Code CLI** (Anthropic) as the primary coding agent, running an
-  **SDD (spec-driven development) sub-agent workflow**: a phase-gated
-  pipeline of `explore → propose → spec → design → tasks → apply → verify`,
-  each phase run as a dedicated sub-agent with a narrow, explicit
-  responsibility.
+- **Claude Code CLI** (Anthropic), model **Claude Opus 4.8 (1M context)**, as
+  the primary coding agent, running an **SDD (spec-driven development)
+  sub-agent workflow**: a phase-gated pipeline of `explore → propose → spec →
+  design → tasks → apply → verify`, each phase run as a dedicated sub-agent
+  with a narrow, explicit responsibility.
+- **[Gentle AI](https://github.com/Gentleman-Programming/gentle-ai)** — the
+  agentic framework/harness layered on Claude Code that provides the SDD
+  sub-agent pipeline, a bounded code-review lifecycle (`gentle-ai review`, 4R
+  lenses), and CodeGraph code-intelligence. It is what turns the phase-gated
+  workflow below from a convention into enforced tooling.
 - **Engram**, a persistent-memory MCP server, stored every phase's artifact
   (proposal, spec, design, tasks, apply-progress) so each phase — and each
   apply batch, since implementation ran across several sessions — could
