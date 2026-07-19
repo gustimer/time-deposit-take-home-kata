@@ -167,6 +167,31 @@ reviewed before the agent proceeded to the next phase). Concretely:
   (see the apply-phase verification log for the exact commands and
   responses).
 
+### Key decisions and rationale
+
+- **Python + FastAPI**: Swagger/OpenAPI is auto-generated from the route
+  signatures and Pydantic schemas — the lowest-friction way to satisfy the
+  OpenAPI requirement within the deadline.
+- **`float` in the domain, `Decimal` in the DB**: keeps the exact legacy
+  arithmetic so `update_balance` stays behavior-identical, while `NUMERIC`
+  columns provide banking-grade precision at rest. The conversion
+  (`Decimal(str(x))` on write, `float(x)` on read) is isolated to the
+  repository adapter, so precision concerns never leak into the domain or
+  application layers.
+- **Strategy pattern for interest**: honours the Open/Closed principle — a new
+  plan type is a new strategy class plus one registry entry, with zero changes
+  to `update_balance`.
+- **Characterization tests before the refactor**: pinned the current behavior
+  bit-for-bit by asserting the real output of the unrefactored code, proving
+  the strategy refactor introduced zero drift.
+- **`uv`**: a reproducible lockfile makes the environment installable for
+  evaluators in a single command.
+- **`docker-compose` with seed data**: one command brings up PostgreSQL + the
+  API with sample data already loaded — the endpoints are demoable
+  immediately.
+- **Single branch, atomic commits**: a clean, reviewable history without the
+  overhead of chained PRs.
+
 The `TimeDeposit` class and the original `test_time_deposit.py` file were
 never modified — confirmed via `git diff` at the end of every phase — per
 the kata's non-breaking-change constraint.
