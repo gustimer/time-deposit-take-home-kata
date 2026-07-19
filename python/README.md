@@ -162,10 +162,12 @@ reviewed before the agent proceeded to the next phase). Concretely:
 - **Tests** (unit, use-case, endpoint, and testcontainers integration):
   AI-authored RED-first per the strict-TDD gate.
 - **Infra** (`docker-compose.yml`, `Dockerfile`, `seed.sql`) and this
-  documentation: AI-authored in this final phase, then manually verified by
-  actually bringing the stack up and exercising both endpoints end-to-end
-  (see the apply-phase verification log for the exact commands and
-  responses).
+  documentation: AI-authored in this final phase, then verified end-to-end by
+  bringing the stack up (`docker compose up -d --build`) and exercising both
+  endpoints. `POST /time-deposits/update-balances` and `GET /time-deposits`
+  each returned HTTP 200, and the seeded `basic` deposit of `1234567.00` at
+  `days=45` updated to `1235595.81` — the exact value pinned by the
+  characterization tests — confirming identical behavior against real Postgres.
 
 ### Key decisions and rationale
 
