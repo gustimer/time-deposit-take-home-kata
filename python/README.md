@@ -95,6 +95,15 @@ session — Docker must be running for those to pass.
 
 ## AI-Assisted Development (README requirement 6)
 
+The emphasis worth calling out: **the AI executed under human direction, with a
+provable safety net around the one change the kata forbids breaking.** Before
+`update_balance` was touched, 23 characterization tests pinned its exact output
+by running the *original* code; the strategy refactor then had to keep every one
+of them green and unchanged — making "no breaking changes" a proven fact, not a
+promise. Every phase was human-reviewed before proceeding, and an independent
+`sdd-verify` pass re-checked the result rather than trusting the implementer's
+own report.
+
 ### Tools and setup
 
 - **Claude Code CLI** (Anthropic), model **Claude Opus 4.8 (1M context)**, as
