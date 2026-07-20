@@ -28,8 +28,15 @@ system prompts, and agent configurations.
 
 - `agents/` — all 18 sub-agent definitions (`sdd-*`, `review-*`, `jd-*`),
   verbatim as used.
-- `skills/sdd-workflow/` — the SDD orchestrator workflow and the shared
-  phase conventions the `sdd-*` agents follow.
+- `skills/sdd/` — the 10 `sdd-*` phase skills (each `SKILL.md` plus its
+  reference modules), verbatim as used. They are orchestrator-loaded and
+  delegate-only by design (`user-invocable: false` in their frontmatter):
+  the orchestrator loads them and delegates the actual work to the
+  matching sub-agent in `agents/`.
+- `skills/sdd-workflow/` — the SDD orchestrator workflow plus the shared
+  conventions and contracts the skills reference (`sdd-phase-common.md`,
+  `sdd-status-contract.md`, `openspec-convention.md`,
+  `engram-convention.md`, `skill-resolver.md`).
 
 ## Reproducing the setup
 
@@ -42,18 +49,23 @@ system prompts, and agent configurations.
    cp ai/agents/*.md ~/.claude/agents/
    ```
 
-3. Copy the workflow docs so the orchestrator can lazy-load them:
+3. Copy the invocable `sdd-*` skills:
+
+   ```bash
+   cp -r ai/skills/sdd/* ~/.claude/skills/
+   ```
+
+4. Copy the workflow docs so the orchestrator can lazy-load them:
 
    ```bash
    mkdir -p ~/.claude/skills/_shared
    cp ai/skills/sdd-workflow/*.md ~/.claude/skills/_shared/
    ```
 
-4. Run Claude Code in the repository; the `sdd-*` skills drive the workflow
+5. Run Claude Code in the repository; the `sdd-*` skills drive the workflow
    and the agents in `~/.claude/agents/` are picked up automatically.
 
-Notes: the agent files reference skill paths under `~/.claude/skills/` and
-optional MCP servers (Engram memory, CodeGraph code intelligence); without
-those servers the agents still run, minus persistent memory and graph
-lookups. Files are committed as used, with personal data (none was present
+Notes: the skill and agent files reference optional MCP servers (Engram
+memory, CodeGraph code intelligence); without those servers they still run,
+minus persistent memory and graph lookups. Files are committed as used, with personal data (none was present
 beyond home-directory paths, already generalized to `~/...`) scrubbed.
