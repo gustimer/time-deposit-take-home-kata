@@ -8,24 +8,8 @@ concrete persistence (SQLAlchemy/psycopg) lives only in
 
 from abc import ABC, abstractmethod
 
+from domain.time_deposit import TimeDeposit
 from domain.withdrawal import Withdrawal
-from time_deposit import TimeDeposit
-
-
-class TimeDepositWithWithdrawals:
-    """DTO pairing a deposit's fields with its withdrawals.
-
-    Shaped for the GET /time-deposits response: id, planType, balance, days,
-    withdrawals. Framework-free -- the HTTP adapter maps this to its own
-    Pydantic schema, it is never serialized directly.
-    """
-
-    def __init__(self, id, planType, balance, days, withdrawals: list[Withdrawal]):
-        self.id = id
-        self.planType = planType
-        self.balance = balance
-        self.days = days
-        self.withdrawals = withdrawals
 
 
 class TimeDepositRepository(ABC):
@@ -35,8 +19,13 @@ class TimeDepositRepository(ABC):
         ...
 
     @abstractmethod
-    def list_with_withdrawals(self) -> list[TimeDepositWithWithdrawals]:
-        """Return every deposit paired with its withdrawals (possibly empty)."""
+    def list_with_withdrawals(self) -> list[tuple[TimeDeposit, list[Withdrawal]]]:
+        """Return every deposit paired with its withdrawals (possibly empty).
+
+        Pure domain data only: each element is a `(TimeDeposit,
+        [Withdrawal, ...])` pair. Any caller-facing read model is assembled
+        in the application layer, never here.
+        """
         ...
 
     @abstractmethod

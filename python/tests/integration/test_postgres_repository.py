@@ -20,7 +20,7 @@ from sqlalchemy.orm import sessionmaker
 from testcontainers.postgres import PostgresContainer
 
 from adapters.outbound.postgres.repository import SqlAlchemyTimeDepositRepository
-from time_deposit import TimeDeposit
+from domain.time_deposit import TimeDeposit
 
 SCHEMA_SQL = (
     Path(__file__).resolve().parents[2]
@@ -133,11 +133,12 @@ def test_list_with_withdrawals_nests_correctly_including_empty(
     db_session.commit()
 
     result = repository.list_with_withdrawals()
-    by_id = {td.id: td for td in result}
+    by_id = {deposit.id: (deposit, withdrawals) for deposit, withdrawals in result}
 
-    deposit_1 = by_id[1]
-    assert len(deposit_1.withdrawals) == 2
-    withdrawals_by_id = {w.id: w for w in deposit_1.withdrawals}
+    deposit_1, withdrawals_1 = by_id[1]
+    assert isinstance(deposit_1, TimeDeposit)
+    assert len(withdrawals_1) == 2
+    withdrawals_by_id = {w.id: w for w in withdrawals_1}
     assert withdrawals_by_id[1].timeDepositId == 1
     assert withdrawals_by_id[1].amount == 100.50
     assert isinstance(withdrawals_by_id[1].amount, float)
@@ -145,8 +146,8 @@ def test_list_with_withdrawals_nests_correctly_including_empty(
     assert withdrawals_by_id[2].amount == 50.25
     assert withdrawals_by_id[2].date == datetime.date(2026, 2, 1)
 
-    deposit_2 = by_id[2]
-    assert deposit_2.withdrawals == []
+    _, withdrawals_2 = by_id[2]
+    assert withdrawals_2 == []
 
 
 @pytest.mark.integration

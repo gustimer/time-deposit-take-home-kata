@@ -4,10 +4,7 @@ Not a pytest module (no `test_*` symbols) -- shared test infra reused by
 `test_update_balances_use_case.py` and `test_list_deposits_use_case.py`.
 """
 
-from ports.time_deposit_repository import (
-    TimeDepositRepository,
-    TimeDepositWithWithdrawals,
-)
+from ports.time_deposit_repository import TimeDepositRepository
 
 
 class FakeTimeDepositRepository(TimeDepositRepository):
@@ -22,21 +19,16 @@ class FakeTimeDepositRepository(TimeDepositRepository):
         return list(self._deposits)
 
     def list_with_withdrawals(self):
-        result = []
-        for td in self._deposits:
-            td_withdrawals = [
-                w for w in self._withdrawals if w.timeDepositId == td.id
-            ]
-            result.append(
-                TimeDepositWithWithdrawals(
-                    id=td.id,
-                    planType=td.planType,
-                    balance=td.balance,
-                    days=td.days,
-                    withdrawals=td_withdrawals,
-                )
+        # Pure domain pairs, mirroring the port contract:
+        # (TimeDeposit, [Withdrawal, ...]). Assembling any read model from
+        # these pairs is the use case's job, not the repository's.
+        return [
+            (
+                td,
+                [w for w in self._withdrawals if w.timeDepositId == td.id],
             )
-        return result
+            for td in self._deposits
+        ]
 
     def save_all(self, xs):
         self.save_all_calls.append(list(xs))

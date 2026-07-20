@@ -8,7 +8,7 @@ known values (e.g. basic/1234567.00/days=45 -> 1235595.81).
 
 from application.update_balances import UpdateBalancesUseCase
 from tests.unit.fake_repository import FakeTimeDepositRepository
-from time_deposit import TimeDeposit, TimeDepositCalculator
+from domain.time_deposit import TimeDeposit, TimeDepositCalculator
 
 
 def make_repo(*deposits):

@@ -7,7 +7,7 @@ delegated verbatim to `TimeDepositCalculator.update_balance`.
 """
 
 from ports.time_deposit_repository import TimeDepositRepository
-from time_deposit import TimeDepositCalculator
+from domain.time_deposit import TimeDepositCalculator
 
 
 class UpdateBalancesUseCase:
@@ -18,8 +18,8 @@ class UpdateBalancesUseCase:
     def execute(self):
         """Recalculate and persist balances for every deposit.
 
-        Returns the full updated list, per the POST /time-deposits/update-balances
-        contract (the HTTP adapter serializes this response).
+        Returns the full updated list so callers can present the outcome of
+        the balance-update run without a second query.
         """
         deposits = self._repository.list_all()
         self._calculator.update_balance(deposits)

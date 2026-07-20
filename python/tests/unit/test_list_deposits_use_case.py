@@ -1,14 +1,16 @@
 """Unit tests for ListDepositsUseCase (application layer).
 
 Uses the in-memory FakeTimeDepositRepository -- no DB, no framework.
-Verifies the GET /time-deposits DTO shape: id, planType, balance, days,
-withdrawals (each withdrawal has id, timeDepositId, amount, date).
+Verifies the use case assembles the `TimeDepositWithWithdrawals` read model
+(id, planType, balance, days, withdrawals) from the pure domain pairs the
+repository port returns.
 """
 
 from application.list_deposits import ListDepositsUseCase
+from application.read_models import TimeDepositWithWithdrawals
+from domain.time_deposit import TimeDeposit
 from domain.withdrawal import Withdrawal
 from tests.unit.fake_repository import FakeTimeDepositRepository
-from time_deposit import TimeDeposit
 
 
 class TestListDepositsUseCase:
@@ -23,6 +25,7 @@ class TestListDepositsUseCase:
 
         assert len(result) == 1
         entry = result[0]
+        assert isinstance(entry, TimeDepositWithWithdrawals)
         assert entry.id == 1
         assert entry.planType == "basic"
         assert entry.balance == 1000.83
@@ -40,6 +43,7 @@ class TestListDepositsUseCase:
         result = use_case.execute()
 
         assert len(result) == 1
+        assert isinstance(result[0], TimeDepositWithWithdrawals)
         assert result[0].withdrawals == []
 
     def test_withdrawals_only_nested_under_owning_deposit(self):

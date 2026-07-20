@@ -17,12 +17,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from adapters.outbound.postgres.models import TimeDepositModel
+from domain.time_deposit import TimeDeposit
 from domain.withdrawal import Withdrawal
-from ports.time_deposit_repository import (
-    TimeDepositRepository,
-    TimeDepositWithWithdrawals,
-)
-from time_deposit import TimeDeposit
+from ports.time_deposit_repository import TimeDepositRepository
 
 
 class SqlAlchemyTimeDepositRepository(TimeDepositRepository):
@@ -41,18 +38,22 @@ class SqlAlchemyTimeDepositRepository(TimeDepositRepository):
             for row in rows
         ]
 
-    def list_with_withdrawals(self) -> list[TimeDepositWithWithdrawals]:
+    def list_with_withdrawals(
+        self,
+    ) -> list[tuple[TimeDeposit, list[Withdrawal]]]:
         stmt = select(TimeDepositModel).options(
             selectinload(TimeDepositModel.withdrawals)
         )
         rows = self._session.execute(stmt).scalars().all()
         return [
-            TimeDepositWithWithdrawals(
-                id=row.id,
-                planType=row.plan_type,
-                balance=float(row.balance),
-                days=row.days,
-                withdrawals=[
+            (
+                TimeDeposit(
+                    id=row.id,
+                    planType=row.plan_type,
+                    balance=float(row.balance),
+                    days=row.days,
+                ),
+                [
                     Withdrawal(
                         id=w.id,
                         timeDepositId=w.time_deposit_id,

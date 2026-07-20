@@ -20,7 +20,7 @@ from adapters.outbound.postgres.repository import SqlAlchemyTimeDepositRepositor
 from application.list_deposits import ListDepositsUseCase
 from application.update_balances import UpdateBalancesUseCase
 from ports.time_deposit_repository import TimeDepositRepository
-from time_deposit import TimeDepositCalculator
+from domain.time_deposit import TimeDepositCalculator
 
 
 @lru_cache
