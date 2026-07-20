@@ -13,7 +13,7 @@ from adapters.inbound.http.app import create_app
 from adapters.inbound.http.deps import get_repository
 from domain.withdrawal import Withdrawal
 from tests.unit.fake_repository import FakeTimeDepositRepository
-from time_deposit import TimeDeposit
+from domain.time_deposit import TimeDeposit
 
 
 def make_client(repo):
@@ -30,7 +30,7 @@ class TestUpdateBalancesEndpoint:
         repo = FakeTimeDepositRepository(deposits=[deposit])
         client = make_client(repo)
 
-        response = client.post("/time-deposits/update-balances")
+        response = client.post("/time-deposits/balance-updates")
 
         assert response.status_code == 200
         assert response.json() == [
@@ -48,7 +48,7 @@ class TestUpdateBalancesEndpoint:
         repo = FakeTimeDepositRepository(deposits=[deposit])
         client = make_client(repo)
 
-        client.post("/time-deposits/update-balances")
+        client.post("/time-deposits/balance-updates")
 
         assert len(repo.save_all_calls) == 1
         assert repo.save_all_calls[0][0].balance == 1235595.81
@@ -121,10 +121,10 @@ class TestRouteRegistration:
 
         assert set(schema["paths"].keys()) == {
             "/time-deposits",
-            "/time-deposits/update-balances",
+            "/time-deposits/balance-updates",
         }
         assert set(schema["paths"]["/time-deposits"].keys()) == {"get"}
-        assert set(schema["paths"]["/time-deposits/update-balances"].keys()) == {
+        assert set(schema["paths"]["/time-deposits/balance-updates"].keys()) == {
             "post"
         }
 
@@ -138,5 +138,5 @@ class TestRouteRegistration:
         schema = response.json()
         assert "/time-deposits" in schema["paths"]
         assert "get" in schema["paths"]["/time-deposits"]
-        assert "/time-deposits/update-balances" in schema["paths"]
-        assert "post" in schema["paths"]["/time-deposits/update-balances"]
+        assert "/time-deposits/balance-updates" in schema["paths"]
+        assert "post" in schema["paths"]["/time-deposits/balance-updates"]

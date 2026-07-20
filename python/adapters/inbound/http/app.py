@@ -16,7 +16,7 @@ def create_app() -> FastAPI:
         description=(
             "Recalculate and list time deposits with their withdrawals. "
             "Exposes exactly two endpoints: "
-            "POST /time-deposits/update-balances and GET /time-deposits."
+            "POST /time-deposits/balance-updates and GET /time-deposits."
         ),
         version="0.1.0",
     )

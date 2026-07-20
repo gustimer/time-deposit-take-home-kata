@@ -1,7 +1,7 @@
 """FastAPI routes for the time-deposit HTTP adapter.
 
 Exactly two business endpoints, per spec:
-- POST /time-deposits/update-balances
+- POST /time-deposits/balance-updates
 - GET  /time-deposits
 
 Use case instances are obtained via `Depends(...)` provider functions
@@ -11,7 +11,8 @@ by the use cases are mapped explicitly to `*Out` schemas here -- the same
 explicit-mapping convention already used by the Postgres adapter -- rather
 than relying on Pydantic's `from_attributes` to invent a default
 `withdrawals` list for `TimeDeposit` (which has no `withdrawals`
-attribute at all, unlike the `TimeDepositWithWithdrawals` DTO).
+attribute at all, unlike the `TimeDepositWithWithdrawals` read model
+from `application/read_models.py`).
 """
 
 from fastapi import APIRouter, Depends
@@ -47,7 +48,16 @@ def _to_time_deposit_out(deposit) -> TimeDepositOut:
     )
 
 
-@router.post("/time-deposits/update-balances", response_model=list[TimeDepositOut])
+# RESTful shape (brief: "make logical assumptions and justify them in code
+# comments"): the bulk recalculation is modeled as creating a balance-update
+# run over the /time-deposits collection -- POST to the resource noun
+# "balance-updates", keeping verbs out of the URI. The run is deliberately
+# NOT an addressable resource: the brief pins the API to exactly two
+# endpoints, so no `GET /time-deposits/balance-updates/{id}` can exist and
+# no `Location` header can be honored -- which rules out `201 Created`
+# (RFC 9110 s. 15.3.2) and makes `200 OK` with the updated collection the
+# honest status code for this bulk action.
+@router.post("/time-deposits/balance-updates", response_model=list[TimeDepositOut])
 def update_balances(
     use_case: UpdateBalancesUseCase = Depends(get_update_balances_use_case),
 ):
