@@ -12,7 +12,7 @@ changes any of these values, the refactor introduced a behavior change.
 
 import pytest
 
-from time_deposit import TimeDeposit, TimeDepositCalculator
+from domain.time_deposit import TimeDeposit, TimeDepositCalculator
 
 
 def update_balance(plan_type, balance, days):

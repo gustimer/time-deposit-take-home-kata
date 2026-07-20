@@ -13,7 +13,7 @@ from domain.interest_strategies import (
     StudentInterestStrategy,
     get_strategy,
 )
-from time_deposit import TimeDeposit
+from domain.time_deposit import TimeDeposit
 
 
 def make_td(plan_type, balance, days):
