@@ -8,3 +8,5 @@ __pycache__/
 .idea/
 package-lock.json
 .vscode/
+# Local AI runtime state
+.atl/

@@ -9,8 +9,8 @@ kata instructions are unchanged in the repository root [`README.md`](../README.m
 
 ```
 python/
-├── time_deposit.py              # preserved domain (TimeDeposit, TimeDepositCalculator) — untouched public API
-├── domain/                      # interest strategy registry (basic/student/premium/null), zero framework imports
+├── time_deposit.py              # import shim preserving the historical path — untouched public API
+├── domain/                      # TimeDeposit + TimeDepositCalculator (canonical home) and the interest strategy registry, zero framework imports
 ├── ports/                       # TimeDepositRepository ABC
 ├── application/                 # UpdateBalancesUseCase, ListDepositsUseCase
 ├── adapters/
@@ -65,10 +65,10 @@ uv run uvicorn main:app --reload
 
 1. Open **http://localhost:8000/docs**.
 2. There are exactly two endpoints:
-   - `POST /time-deposits/update-balances` — recalculates and persists
+   - `POST /time-deposits/balance-updates` — recalculates and persists
      interest for every stored deposit, returns the updated list.
    - `GET /time-deposits` — returns all deposits with nested `withdrawals`.
-3. Sample flow: expand `POST /time-deposits/update-balances` → **Try it
+3. Sample flow: expand `POST /time-deposits/balance-updates` → **Try it
    out** → **Execute** (no request body needed) to update all seeded
    balances, then expand `GET /time-deposits` → **Try it out** → **Execute**
    to see the persisted result, including a deposit with an empty
@@ -77,7 +77,7 @@ uv run uvicorn main:app --reload
 Equivalent via `curl`:
 
 ```bash
-curl -s -X POST http://localhost:8000/time-deposits/update-balances
+curl -s -X POST http://localhost:8000/time-deposits/balance-updates
 curl -s http://localhost:8000/time-deposits
 ```
 
@@ -128,9 +128,16 @@ own report.
 
 This setup is practical and reproducible: it only requires the Claude Code
 CLI, the Engram MCP server, and this repository's checked-in
-`pyproject.toml`/`uv.lock` — no bespoke infrastructure.
+`pyproject.toml`/`uv.lock` — no bespoke infrastructure. The actual agent
+definitions and workflow docs used are committed under [`ai/`](../ai/)
+(see [`ai/README.md`](../ai/README.md) for copy-and-run reproduction steps).
 
 ### Custom rules / agent configuration
+
+The concrete configuration files are committed in [`ai/`](../ai/): all 18
+sub-agent definitions in [`ai/agents/`](../ai/agents/) and the SDD workflow
+docs in [`ai/skills/sdd-workflow/`](../ai/skills/sdd-workflow/), with
+reproduction instructions in [`ai/README.md`](../ai/README.md). In summary:
 
 - **Phase-gated SDD workflow**: a single orchestrator thread that never
   writes code itself — it delegates each phase (explore, spec, design,
@@ -173,7 +180,7 @@ reviewed before the agent proceeded to the next phase). Concretely:
 - **Infra** (`docker-compose.yml`, `Dockerfile`, `seed.sql`) and this
   documentation: AI-authored in this final phase, then verified end-to-end by
   bringing the stack up (`docker compose up -d --build`) and exercising both
-  endpoints. `POST /time-deposits/update-balances` and `GET /time-deposits`
+  endpoints. `POST /time-deposits/balance-updates` and `GET /time-deposits`
   each returned HTTP 200, and the seeded `basic` deposit of `1234567.00` at
   `days=45` updated to `1235595.81` — the exact value pinned by the
   characterization tests — confirming identical behavior against real Postgres.
@@ -205,4 +212,8 @@ reviewed before the agent proceeded to the next phase). Concretely:
 
 The `TimeDeposit` class and the original `test_time_deposit.py` file were
 never modified — confirmed via `git diff` at the end of every phase — per
-the kata's non-breaking-change constraint.
+the kata's non-breaking-change constraint. The class now lives verbatim in
+`domain/time_deposit.py` (its canonical hexagonal home), while the
+historical `time_deposit` import path is preserved through a thin re-export
+shim, so external consumers — including the untouched
+`test_time_deposit.py` — keep working unchanged.
