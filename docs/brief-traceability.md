@@ -46,7 +46,20 @@ Status values:
 - Reviewer: fresh-context agent. Inputs: the original brief and the repository. Nothing else.
 - Verdict per row: pass / fail with the concrete gap.
 - Delivery is blocked until every row passes.
+- Run on 2026-07-20 against the full fix candidate (adversarial instructions: find what is still missing).
 
 | ID | Verdict | Gap found |
 |----|---------|-----------|
-| — | pending | review runs after R1b, R16, R17, P2 close |
+| R1a, R1b, R2, R3 | PASS | — |
+| R4–R10 | PASS | — |
+| R11, R12, R13 | PASS | — (R11 verified by diffing the shared class against the pre-solution commit) |
+| R14, R15, R18 | PASS | — |
+| R16 | PASS | Caveat: local `.claude/settings.local.json` and MCP server configs remain intentionally uncommitted (machine-local state) |
+| R17 | PASS | — |
+| G1–G3, G5 | PASS | — |
+| G4 | N/A | Waived by the brief |
+| P1 | PASS | Caveat: the OpenAPI contract is served live (`/openapi.json`, `/docs`) and pinned by tests; no static `openapi.yaml` artifact is committed — a deliberate choice documented in `app.py` |
+| P2–P5 | PASS | — |
+| S1 | PASS | — |
+
+All rows pass; the two caveats are recorded decisions, not gaps. Delivery unblocked.

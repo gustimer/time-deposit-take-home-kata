@@ -143,12 +143,11 @@ reproduction instructions in [`ai/README.md`](../ai/README.md). In summary:
   writes code itself — it delegates each phase (explore, spec, design,
   tasks, apply, verify) to a dedicated sub-agent, with the orchestrator
   reviewing the output between phases before proceeding.
-- **Single-branch, atomic-commit delivery policy**: all work happens on one
-  feature branch (`feat/time-deposit-solution`), with one focused
-  conventional-commit per completed task (e.g. `refactor(python): extract
-  interest strategy registry`), rather than one large commit — kept for
-  reviewability even though this repo's contribution guidelines don't
-  require a PR.
+- **Atomic-commit delivery policy**: one focused conventional-commit per
+  completed task (e.g. `refactor(python): extract interest strategy
+  registry`), rather than one large commit — kept for reviewability even
+  though this repo's contribution guidelines don't require a PR. The
+  history is linear and verifiable with `git log --oneline`.
 - **Strict TDD mode**: every behavior-changing task followed
   RED (write/confirm a failing test first) → GREEN (implement until it
   passes) → REFACTOR, enforced as a hard gate by the agent's own tasking
@@ -207,7 +206,7 @@ reviewed before the agent proceeded to the next phase). Concretely:
 - **`docker-compose` with seed data**: one command brings up PostgreSQL + the
   API with sample data already loaded — the endpoints are demoable
   immediately.
-- **Single branch, atomic commits**: a clean, reviewable history without the
+- **Atomic, linear commits**: a clean, reviewable history without the
   overhead of chained PRs.
 
 The `TimeDeposit` class and the original `test_time_deposit.py` file were
