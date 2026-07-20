@@ -35,8 +35,8 @@ system prompts, and agent configurations.
   matching sub-agent in `agents/`.
 - `skills/sdd-workflow/` — the SDD orchestrator workflow plus the shared
   conventions and contracts the skills reference (`sdd-phase-common.md`,
-  `sdd-status-contract.md`, `openspec-convention.md`,
-  `engram-convention.md`, `skill-resolver.md`).
+  `sdd-status-contract.md`, `persistence-contract.md`,
+  `openspec-convention.md`, `engram-convention.md`, `skill-resolver.md`).
 
 ## Reproducing the setup
 
@@ -49,7 +49,7 @@ system prompts, and agent configurations.
    cp ai/agents/*.md ~/.claude/agents/
    ```
 
-3. Copy the invocable `sdd-*` skills:
+3. Copy the `sdd-*` phase skills (orchestrator-loaded, delegate-only):
 
    ```bash
    cp -r ai/skills/sdd/* ~/.claude/skills/
